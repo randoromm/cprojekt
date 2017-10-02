@@ -23,6 +23,17 @@ BINDIR = bin
 TARGET = $(BINDIR)/$(MCU)-user-code.ihx
 ELF = $(BINDIR)/$(MCU)-user-code.elf
 
+<<<<<<< HEAD
+=======
+# Blank firmware which can be used to "erase" user code
+BLANK_FW = tooling/atemega2560-blank-user-code/bin/atmega2560-user-code-blank.ihx
+
+# Arduino device file defaults to /dev/ttyACM0
+# Use shell command export to define alternative device file
+# Example: export ARDUINO=/dev/ttyACM0
+ARDUINO ?= /dev/ttyACM0
+
+>>>>>>> 790394db34dc8d475dbe3f75171271ed7967f600
 # Source files. wildcard "uses" all .c files in src and lib directory
 SRCDIR = src
 BUILD_LIBS_DIR = lib
@@ -107,6 +118,13 @@ dist-clean: clean
 install:
 	$(AVRDUDE) $(AVRDUDEARGS) -U flash:w:$(TARGET)
 
+<<<<<<< HEAD
+=======
+# "Erase" user code part by loading blank firmware
+erase:
+	$(AVRDUDE) $(AVRDUDEARGS) -U flash:w:$(BLANK_FW)
+
+>>>>>>> 790394db34dc8d475dbe3f75171271ed7967f600
 # Format code using code formatter script
 format:
 	$(CODE_FORMATTER) $(SRCDIR)/*.c
@@ -115,5 +133,9 @@ format:
 size:
 	$(AVRSIZE) $(AVRSIZEARGS) $(ELF)
 
+<<<<<<< HEAD
 .PHONY: clean dist-clean install format size
+=======
+.PHONY: all clean dist-clean install erase format size
+>>>>>>> 790394db34dc8d475dbe3f75171271ed7967f600
 
