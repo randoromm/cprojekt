@@ -1,9 +1,35 @@
-#include <stdio.h>
+#include <avr/io.h>
+#include <util/delay.h>
 
-/*
- * Comment block
- */
-int main() {
-    printf("Hello, World!\n");  // Comment
-    return 0;
+#define BLINK_DELAY_MS_1 3000
+#define BLINK_DELAY_MS_2 2000
+#define BLINK_DELAY_MS_3 1000
+
+void main (void)
+{
+    /* Set port B pin 7 for output for Arduino Mega yellow LED */
+    DDRB |= _BV(DDB7);
+
+    while (1) {
+        /* Set port B pin 7 high to turn Arduino Mega yellow LED on */
+        PORTB |= _BV(PORTB7);
+        _delay_ms(BLINK_DELAY_MS_1);
+        /* Set port B pin 7 high to turn Arduino Mega yellow LED off */
+        PORTB &= ~_BV(PORTB7);
+        _delay_ms(BLINK_DELAY_MS_1);
+
+        /* Set port B pin 7 high to turn Arduino Mega yellow LED on */
+        PORTB |= _BV(PORTB6);
+        _delay_ms(BLINK_DELAY_MS_2);
+        /* Set port B pin 7 high to turn Arduino Mega yellow LED off */
+        PORTB &= ~_BV(PORTB6);
+        _delay_ms(BLINK_DELAY_MS_2);
+
+        /* Set port B pin 7 high to turn Arduino Mega yellow LED on */
+        PORTB |= _BV(PORTB5);
+        _delay_ms(BLINK_DELAY_MS_3);
+        /* Set port B pin 7 high to turn Arduino Mega yellow LED off */
+        PORTB &= ~_BV(PORTB5);
+        _delay_ms(BLINK_DELAY_MS_3);
+    }
 }
