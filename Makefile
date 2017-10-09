@@ -127,8 +127,6 @@ format:
 size:
 	$(AVRSIZE) $(AVRSIZEARGS) $(ELF)
 
-
-
 .PHONY: all clean dist-clean install erase format size
 
 
