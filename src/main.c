@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/pgmspace.h>
 #include "uart.h"
 #include "print_helper.h"
 #include "hmi_msg.h"
@@ -10,18 +11,17 @@ static inline void init_leds(void) {
     DDRA |= _BV(DDA0);
 }
 
-
 /* Init error console as stderr in UART1 and print user code info */
 static inline void init_errcon(void) {
     simple_uart1_init();
     simple_uart0_init();
     stdin = stdout = &simple_uart0_io;
     stderr = &simple_uart1_out;
-    fprintf(stderr, "Version: %s built on: %s %s\n",
-            FW_VERSION, __DATE__, __TIME__);
-    fprintf(stderr, "avr-libc version: %s avr-gcc version: %s\n",
-            __AVR_LIBC_VERSION_STRING__, __VERSION__);
-    fprintf(stdout, NAME_STRING "\n");
+    fprintf_P(stderr, PSTR(VER_FW "\n"),
+              PSTR(FW_VERSION), PSTR(__DATE__), PSTR(__TIME__));
+    fprintf_P(stderr, PSTR(VER_LIBC "\n"),
+              PSTR(__AVR_LIBC_VERSION_STRING__), PSTR(__VERSION__));
+    fprintf_P(stdout, PSTR(NAME_STRING "\n"));
     print_ascii_tbl(stdout);
     unsigned char ascii[128] = {0};
 
@@ -34,15 +34,16 @@ static inline void init_errcon(void) {
 
 static inline void ask_number(void) {
     char inBuffer = ' ';
-    fprintf(stdout, "Enter number >");
+    fprintf_P(stdout, PSTR(ASK_NUMBER));
     fscanf(stdin, "%c", &inBuffer);
     fprintf(stdout, "%c\n", inBuffer);
+    int number = (int)inBuffer - (int)'0';
 
-    if ((int)inBuffer - (int)'0' >= 0 && (int)inBuffer - (int)'0' < 10) {
-        fprintf(stdout, "You entered number %s.\n",
-                numStrings[(int)inBuffer - (int)'0']);
+    if (number >= 0 && number < 10) {
+        fprintf_P(stdout, PSTR(ACK_NUMBER "\n"),
+                  (PGM_P)pgm_read_word(&(num_strings[number])));
     } else {
-        fprintf(stdout, "Please enter number between 0 and 9!\n");
+        fprintf_P(stdout, PSTR(INC_NUMBER "\n"));
     }
 }
 
