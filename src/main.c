@@ -6,6 +6,7 @@
 #include "print_helper.h"
 #include "hmi_msg.h"
 #include "../lib/hd44780_111/hd44780.h"
+#define BLINK_DELAY_MS_1 100
 
 static inline void init_leds(void) {
     /* Set port A pin 0 for output for Arduino Mega red LED */
