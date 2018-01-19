@@ -2,11 +2,16 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
+#include <avr/interrupt.h>
 #include "uart.h"
 #include "print_helper.h"
 #include "hmi_msg.h"
 #include "../lib/hd44780_111/hd44780.h"
-#define BLINK_DELAY_MS_1 100
+#include "../lib/andygock_avr-uart/uart.h"
+
+#define BLINK_DELAY_MS_1 1000
+#define UART_BAUD 9600
+#define UART_STATUS_MASK 0x00FF
 
 static inline void init_leds(void) {
     /* Set port A pin 0 for output for Arduino Mega red LED */
@@ -14,8 +19,8 @@ static inline void init_leds(void) {
 }
 
 static inline void init_errcon(void) {
-    simple_uart1_init();
-    simple_uart0_init();
+    uart0_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
+    uart1_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
     stdin = stdout = &simple_uart0_io;
     stderr = &simple_uart1_out;
     fprintf_P(stderr, PSTR(VER_FW "\n"),
